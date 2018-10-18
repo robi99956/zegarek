@@ -11,7 +11,6 @@
 #include "stm32f0xx_hal.h"
 
 typedef enum _get_time_mode{ MANUAL, NTP, API_TIME, API_LOCTIME } get_time_mode;
-typedef enum _server_callback_type{ RX_CALLBACK, TX_CALLBACK } server_callback_type;
 
 typedef union _IP_t
 {
@@ -75,7 +74,6 @@ typedef uint8_t(*wifi_uart_callback)(char*);
 
 void wifi_uart_handle_register( UART_HandleTypeDef * huart );
 void wifi_uart_callback_register( wifi_uart_callback _callback );
-void wifi_uart_server_callback_register( wifi_uart_callback _callback, server_callback_type type );
 void wifi_uart_start_rec( void );
 
 void wifi_uart_init( void );

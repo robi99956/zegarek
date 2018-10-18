@@ -14,6 +14,7 @@ RM := rm -rf
 -include Drivers/CMSIS/subdir.mk
 -include Application/User/WiFi/subdir.mk
 -include Application/User/Scheduler/subdir.mk
+-include Application/User/RTC/subdir.mk
 -include Application/User/Flash_mem/subdir.mk
 -include Application/User/subdir.mk
 -include Application/SW4STM32/subdir.mk

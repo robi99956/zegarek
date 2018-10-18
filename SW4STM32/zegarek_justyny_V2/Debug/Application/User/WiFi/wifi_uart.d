@@ -36,7 +36,8 @@ Application/User/WiFi/wifi_uart.o: ../Application/User/WiFi/wifi_uart.c \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../Application/User/WiFi/../Scheduler/scheduler.h
+ ../Application/User/WiFi/../Scheduler/scheduler.h \
+ ../Application/User/WiFi/../Scheduler/system.h
 
 ../Application/User/WiFi/wifi.h:
 
@@ -113,3 +114,5 @@ X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_u
 X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 
 ../Application/User/WiFi/../Scheduler/scheduler.h:
+
+../Application/User/WiFi/../Scheduler/system.h:

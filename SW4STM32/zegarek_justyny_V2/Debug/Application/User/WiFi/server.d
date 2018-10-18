@@ -43,7 +43,9 @@ Application/User/WiFi/server.o: ../Application/User/WiFi/server.c \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h \
+ ../Application/User/WiFi/../Scheduler/scheduler.h \
+ ../Application/User/WiFi/../Scheduler/system.h
 
 ../Application/User/WiFi/wifi.h:
 
@@ -134,3 +136,7 @@ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h:
 X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h:
+
+../Application/User/WiFi/../Scheduler/scheduler.h:
+
+../Application/User/WiFi/../Scheduler/system.h:

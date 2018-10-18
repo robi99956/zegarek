@@ -1,5 +1,6 @@
 "Application/SW4STM32/startup_stm32f072xb.o"
 "Application/User/Flash_mem/mem_funs.o"
+"Application/User/RTC/rtc.o"
 "Application/User/Scheduler/scheduler.o"
 "Application/User/WiFi/server.o"
 "Application/User/WiFi/wifi.o"

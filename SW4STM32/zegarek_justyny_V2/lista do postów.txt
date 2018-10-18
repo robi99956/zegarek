@@ -1,0 +1,24 @@
+type - typ synchronizacji
+LOCTIME, TIME, NTP, MANUAL
+
+
+msc_zap - Treść zapytania serwera API dla lokalizacji
+czas_zap - Treść zapytania serwera API dla czasu
+lat - Znacznik poprzedzający dane lat
+lon - Znacznik poprzedzający dane lon
+czas_mark - Znacznik poprzedzający dane czasu
+kraj - Znacznik poprzedzający kod kraju
+gmtoffset - Różnica czasu względem południka 0
+ntp_adres - Adres serwera NTP
+dataczas - Dane przesłane bezpośrednio do zegarka
+_ssid
+haslo
+
+
+
+
+
+
+
+
+

@@ -6,15 +6,17 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "wifi.h"
 #include "fatfs.h"
+#include "../Scheduler/scheduler.h"
 
-uint8_t server_rx_callback_main( char * message );
+void server_get_task( void );
 
 void server_init( void )
 {
-	wifi_uart_server_callback_register(server_rx_callback_main, RX_CALLBACK);
+	scheduler_add_task(server_get_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
 }
 
 static uint8_t str_beginswith( char * str, char * begin )
@@ -67,22 +69,6 @@ static char * get_filename( char * message )
 	else return ret;
 }
 
-uint8_t prepare_for_png( char * filename )
-{
-	uint16_t len = strlen(filename);
-
-	if( filename[len-1] == 'g' && filename[len-2] == 'n' && filename[len-3] == 'p' )
-	{
-		sprintf(filename, "BIN %d\r", (int)USERFile.fsize);
-
-		wifi_uart_puts(filename);
-
-		return 1;
-	}
-
-	return 0;
-}
-
 static void send_file( char * message )
 {
 	FRESULT res;
@@ -100,40 +86,42 @@ static void send_file( char * message )
 		return;
 	}
 
-	uint8_t is_png = prepare_for_png(filename);
-
 	do
 	{
 		memset(buf, 0, buf_size+1);
 		res = f_read(&USERFile, buf, buf_size, &br);
 
-		wifi_uart_put_buf(buf, br);
-
+		wifi_uart_put_buf((uint8_t*)buf, br);
 
 	}while( br == buf_size );
 
-	if( is_png == 0 ) wifi_uart_send_CR();
+	wifi_uart_send_CR();
 
 	f_close(&USERFile);
 }
 
-uint8_t server_rx_callback_main( char * message )
+uint8_t server_get_callback( char * message )
 {
-	if( strcmp(message, "POST START") == 0 )
+	uint8_t retval=0;
+
+	if( str_beginswith(message, "GET /") == 1 )
 	{
-		wifi_uart_server_callback_register(server_post_callback, RX_CALLBACK);
-		return 1;
+		f_forcemount();
+		f_chdir("/strona");
+
+		send_file(message);
+
+		retval = 1;
 	}
-	else
-		if( str_beginswith(message, "GET /") == 1 )
-		{
-			f_forcemount();
-			f_chdir("/strona");
 
-			send_file(message);
+	scheduler_unlock(REQUIRES_UART_ANSWER);
+	return retval;
+}
 
-			return 1;
-		}
+void server_get_task( void )
+{
+	static const char cmd[] = "GET\r";
 
-	return 0;
+	wifi_uart_callback_register(server_get_callback);
+	wifi_uart_puts(cmd);
 }

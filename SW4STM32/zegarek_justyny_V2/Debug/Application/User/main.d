@@ -50,6 +50,7 @@ Application/User/main.o: X:/ARM_STM32/zegarek_justyny_V2/Src/main.c \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wifi\wifi.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h \
+ x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_bot.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
@@ -161,6 +162,8 @@ x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wif
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h:
 
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h:
+
+x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc.h:
 

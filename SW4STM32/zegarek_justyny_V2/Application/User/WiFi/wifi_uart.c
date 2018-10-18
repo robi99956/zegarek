@@ -13,7 +13,6 @@
 UART_HandleTypeDef * uart_handle;
 
 wifi_uart_callback callback;
-wifi_uart_callback server_rx_callback, server_tx_callback;
 
 #define STD_LEN 200
 
@@ -33,12 +32,6 @@ void wifi_uart_handle_register( UART_HandleTypeDef * huart )
 void wifi_uart_callback_register( wifi_uart_callback _callback )
 {
 	callback = _callback;
-}
-
-void wifi_uart_server_callback_register( wifi_uart_callback _callback, server_callback_type type )
-{
-	if( type == TX_CALLBACK ) server_tx_callback = _callback;
-	else server_rx_callback = _callback;
 }
 
 void wifi_uart_init( void )
@@ -96,19 +89,8 @@ void wifi_uart_start_rec( void )
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if( server_rx_callback )
-	{
-		if( server_rx_callback(rec_buf) == 0 )
-		{
 			if( callback ) callback(rec_buf);
-		}
-	}
 
 	memset(rec_buf, 0, STD_LEN);
 	wifi_uart_start_rec();
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if( server_tx_callback ) server_tx_callback( NULL );
 }
