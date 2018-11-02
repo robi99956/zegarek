@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Application/User/RTC/rtc.c 
+../Application/User/RTC/rtc.c \
+../Application/User/RTC/time.c 
 
 OBJS += \
-./Application/User/RTC/rtc.o 
+./Application/User/RTC/rtc.o \
+./Application/User/RTC/time.o 
 
 C_DEPS += \
-./Application/User/RTC/rtc.d 
+./Application/User/RTC/rtc.d \
+./Application/User/RTC/time.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -19,6 +19,7 @@ Application/SW4STM32 \
 Application/User/Flash_mem \
 Application/User/RTC \
 Application/User/Scheduler \
+Application/User/WAV_player \
 Application/User/WiFi \
 Application/User \
 Drivers/CMSIS \

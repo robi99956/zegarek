@@ -101,13 +101,18 @@ void usb_connect( void )
 	*(uint16_t*)USB_BCDR |= USB_BCDR_DPPU;
 }
 
-void f_forcemount( void )
+FRESULT f_forcemount( uint8_t usb_off )
 {
-	if( is_mounted == 1 ) return;
+	if( is_mounted == 1 ) return FR_OK;
 
-	usb_disconnect();
-	f_mount(&USERFatFS, USERPath, 1);
-	is_mounted = 1;
+	if( usb_off ) usb_disconnect();
+	if( f_mount(&USERFatFS, USERPath, 1) == FR_OK )
+	{
+		is_mounted = 1;
+		return FR_OK;
+	}
+
+	return FR_INT_ERR;
 }
 
 void f_unmount( void )

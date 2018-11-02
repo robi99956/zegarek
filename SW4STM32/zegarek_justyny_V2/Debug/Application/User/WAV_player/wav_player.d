@@ -1,5 +1,5 @@
-Application/User/main.o: X:/ARM_STM32/zegarek_justyny_V2/Src/main.c \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/main.h \
+Application/User/WAV_player/wav_player.o: \
+ ../Application/User/WAV_player/wav_player.c \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  X:/ARM_STM32/zegarek_justyny_V2/Inc/stm32f0xx_hal_conf.h \
  X:/ARM_STM32/zegarek_justyny_V2/Inc/main.h \
@@ -44,25 +44,7 @@ Application/User/main.o: X:/ARM_STM32/zegarek_justyny_V2/Src/main.c \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
  X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/usb_device.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_conf.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wifi\wifi.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\rtc\rtc.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_bot.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_scsi.h \
- X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
-
-X:/ARM_STM32/zegarek_justyny_V2/Inc/main.h:
+ ../Application/User/WAV_player/wav_player.h
 
 X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 
@@ -152,36 +134,4 @@ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h:
 
-X:/ARM_STM32/zegarek_justyny_V2/Inc/usb_device.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_conf.h:
-
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wifi\wifi.h:
-
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h:
-
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h:
-
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h:
-
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\rtc\rtc.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_bot.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_scsi.h:
-
-X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+../Application/User/WAV_player/wav_player.h:

@@ -4,26 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Application/User/WiFi/config.c \
-../Application/User/WiFi/server.c \
-../Application/User/WiFi/wifi.c \
-../Application/User/WiFi/wifi_uart.c 
+../Application/User/WAV_player/wav_player.c 
 
 OBJS += \
-./Application/User/WiFi/config.o \
-./Application/User/WiFi/server.o \
-./Application/User/WiFi/wifi.o \
-./Application/User/WiFi/wifi_uart.o 
+./Application/User/WAV_player/wav_player.o 
 
 C_DEPS += \
-./Application/User/WiFi/config.d \
-./Application/User/WiFi/server.d \
-./Application/User/WiFi/wifi.d \
-./Application/User/WiFi/wifi_uart.d 
+./Application/User/WAV_player/wav_player.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Application/User/WiFi/%.o: ../Application/User/WiFi/%.c
+Application/User/WAV_player/%.o: ../Application/User/WAV_player/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo %cd%

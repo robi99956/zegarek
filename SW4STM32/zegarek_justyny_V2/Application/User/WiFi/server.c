@@ -12,18 +12,74 @@
 #include "fatfs.h"
 #include "../Scheduler/scheduler.h"
 
-void server_get_task( void );
+void MX_USB_DEVICE_Init(void);
+static void send_file( char * filename );
+char * prepare_filename( char * filename );
+void send_file_task( void );
+void server_post_task( void );
+
+task_handle_t post_task_handle;
+
+DIR dir;
+
+uint8_t send_file_callback( char * message )
+{
+	if( strcmp(message, "FILE READY") == 0 )
+	{
+		send_file( prepare_filename(NULL) );
+	}
+	else
+	if( (strcmp(message, "FILE OK") == 0) || (strcmp(message, "FILE ERROR") == 0) )
+	{
+		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
+		scheduler_unlock(REQUIRES_UART_ANSWER);
+	}
+
+	return 1;
+}
+
+void send_file_task( void )
+{
+	FILINFO info;
+	FRESULT res;
+
+	res = f_readdir(&dir, &info);
+
+	if( info.fname[0] == 0 || res != FR_OK )
+	{
+		scheduler_unlock(REQUIRES_UART_ANSWER);
+		f_closedir(&dir);
+		f_unmount();
+		MX_USB_DEVICE_Init();
+		return;
+	}
+
+	if( info.fattrib & AM_DIR )
+	{
+		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
+		scheduler_unlock(REQUIRES_UART_ANSWER);
+		return;
+	}
+
+	wifi_uart_puts("FILE ");
+	wifi_uart_puts( prepare_filename(info.fname) );
+	wifi_uart_send_space();
+	wifi_uart_putint( info.fsize, 10 );
+	wifi_uart_send_CR();
+
+	wifi_uart_callback_register( send_file_callback );
+}
 
 void server_init( void )
 {
-	scheduler_add_task(server_get_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
-}
+	FRESULT res;
 
-static uint8_t str_beginswith( char * str, char * begin )
-{
-	uint16_t len = strlen(begin);
+	res = f_opendir(&dir, "/strona");
+	f_chdir("/strona");
+	if( res != FR_OK ) return;
 
-	return ( strncmp(str, begin, len) == 0 );
+	scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
+	scheduler_add_task(server_post_task, 10, DELAY_SECONDS, REPEATABLE | REQUIRES_UART_ANSWER);
 }
 
 void change_config( char * message )
@@ -33,58 +89,108 @@ void change_config( char * message )
 
 	WiFi_config_t * config = wifi_get_config();
 
-	if( strcmp(name, "msc_zap") ) 			strcpy(config->loc_api_info.url, value);
-	else if( strcmp(name, "czas_zap") )		strcpy(config->time_api_info.url, value);
-	else if( strcmp(name, "lat") )			strcpy(config->loc_api_info.marker_lat, value);
-	else if( strcmp(name, "lon") )			strcpy(config->loc_api_info.marker_lon, value);
-	else if( strcmp(name, "czas_mark") )	strcpy(config->time_api_info.marker, value);
-	else if( strcmp(name, "kraj") )			strcpy(config->country_code, value);
-	else if( strcmp(name, "_ssid") )		strcpy(config->connect_info.ssid, value);
-	else if( strcmp(name, "haslo") )		strcpy(config->connect_info.passwd, value);
-	else if( strcmp(name, "ntp_adres") )	strcpy(config->ntp_info.ip, value);
-
-	else if( strcmp(name, "gmtoffset") )	config->gmt_offset = atoi(value);
-	else if( strcmp(name, "dataczas") );
-	else if( strcmp(name, "type") )
+	if( strcmp(name, "msc_zap") == 0 ) 			strcpy(config->loc_api_info.url, value);
+	else if( strcmp(name, "czas_zap") == 0 )	strcpy(config->time_api_info.url, value);
+	else if( strcmp(name, "lat") == 0 )			strcpy(config->loc_api_info.marker_lat, value);
+	else if( strcmp(name, "lon") == 0 )			strcpy(config->loc_api_info.marker_lon, value);
+	else if( strcmp(name, "czas_mark") == 0 )	strcpy(config->time_api_info.marker, value);
+	else if( strcmp(name, "kraj") == 0 )		strcpy(config->country_code, value);
+	else if( strcmp(name, "haslo") == 0 )		strcpy(config->connect_info.passwd, value);
+	else if( strcmp(name, "ntp_adres") == 0 )	strcpy(config->ntp_info.ip, value);
+	else if( strcmp(name, "gmtoffset") == 0 )	config->gmt_offset = atoi(value);
+	else if( strcmp(name, "dataczas") == 0 )
 	{
-		if( strcmp(value, "LOCTIME") ) config->mode = API_LOCTIME;
-		else if( strcmp(value, "TIME") ) config->mode = API_TIME;
-		else if( strcmp(value, "NTP") ) config->mode = NTP;
-		else if( strcmp(value, "MANUAL") ) config->mode = MANUAL;
+
+	}
+	else if( strcmp(name, "_ssid") == 0 )
+	{
+		if( value[0] != 0 ) strcpy(config->connect_info.ssid, value);
+	}
+	else if( strcmp(name, "ssid") == 0 )
+	{
+		if( value[0] != 0 ) strcpy(config->connect_info.ssid, value);
+	}
+	else if( strcmp(name, "type") == 0 )
+	{
+		if( strcmp(value, "LOCTIME") == 0 ) config->mode = API_LOCTIME;
+		else if( strcmp(value, "TIME") == 0 ) config->mode = API_TIME;
+		else if( strcmp(value, "NTP") == 0 ) config->mode = NTP;
+		else if( strcmp(value, "MANUAL") == 0 ) config->mode = MANUAL;
 	}
 }
 
 uint8_t server_post_callback( char * message )
 {
+	uint8_t retval=0;
 
-	return 0;
+	if( strcmp(message, "POST NONE") == 0 )
+	{
+		retval = 1;
+	}
+	else
+	if( strcmp(message, "POST END") == 0 )
+	{
+		WiFi_config_t * config = wifi_get_config();
+		wifi_save_config(config);
+
+		retval = 1;
+	}
+	else
+	if( strcmp(message, "POST START") == 0 )
+	{
+		usb_disconnect();
+	}
+	else
+	if( strncmp(message, "POST ", 5) == 0 )
+	{
+		change_config(message+5);
+		retval = 1;
+	}
+
+	if(retval) scheduler_unlock(REQUIRES_UART_ANSWER);
+
+	return retval;
 }
 
-static char * get_filename( char * message )
+void server_post_task( void )
 {
-	static const char index[] = "index.htm";
-	char * ret = strchr(message, '/')+1;
+	static const char cmd[] = "POST\r";
+	wifi_uart_puts(cmd);
 
-	if( *ret == 0 ) return (char*)index;
-	else return ret;
+	wifi_uart_callback_register(server_post_callback);
 }
 
-static void send_file( char * message )
+char * prepare_filename( char * filename )
+{
+	static char name[15];
+	static const char glowny[] = "INDEX.HTM";
+
+	if( filename == NULL )
+	{
+		if( name[0] == '/' && name[1] == 0 )  return (char*)glowny;
+
+		return name+1;
+	}
+
+	name[0] = '/'; name[1] = 0;
+
+	if( strcmp(filename, glowny) == 0 ) return name;
+
+	strcpy(name+1, filename);
+
+	return name;
+}
+
+static void send_file( char * filename )
 {
 	FRESULT res;
 	char * buf;
 	uint8_t buf_size = get_wifi_buffer(&buf)-1;
 	UINT br=buf_size;
 
-	char * filename = get_filename(message);
-
 	res = f_open(&USERFile, filename, FA_READ);
 
-	if( res != FR_OK )
-	{
-		wifi_uart_send_CR();
-		return;
-	}
+	if( res != FR_OK ) return;
 
 	do
 	{
@@ -95,33 +201,6 @@ static void send_file( char * message )
 
 	}while( br == buf_size );
 
-	wifi_uart_send_CR();
-
 	f_close(&USERFile);
 }
 
-uint8_t server_get_callback( char * message )
-{
-	uint8_t retval=0;
-
-	if( str_beginswith(message, "GET /") == 1 )
-	{
-		f_forcemount();
-		f_chdir("/strona");
-
-		send_file(message);
-
-		retval = 1;
-	}
-
-	scheduler_unlock(REQUIRES_UART_ANSWER);
-	return retval;
-}
-
-void server_get_task( void )
-{
-	static const char cmd[] = "GET\r";
-
-	wifi_uart_callback_register(server_get_callback);
-	wifi_uart_puts(cmd);
-}

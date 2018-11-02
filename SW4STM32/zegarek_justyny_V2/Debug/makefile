@@ -13,6 +13,7 @@ RM := rm -rf
 -include Drivers/STM32F0xx_HAL_Driver/subdir.mk
 -include Drivers/CMSIS/subdir.mk
 -include Application/User/WiFi/subdir.mk
+-include Application/User/WAV_player/subdir.mk
 -include Application/User/Scheduler/subdir.mk
 -include Application/User/RTC/subdir.mk
 -include Application/User/Flash_mem/subdir.mk

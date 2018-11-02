@@ -72,7 +72,7 @@ void MX_FATFS_Init(void);
 void FATFS_mount_event( void );
 void usb_disconnect( void );
 void usb_connect( void );
-void f_forcemount( void );
+FRESULT f_forcemount( uint8_t usb_off );
 void f_unmount( void );
 /* USER CODE END Prototypes */
 #ifdef __cplusplus

@@ -76,7 +76,12 @@ void scheduler_unlock(scheduler_flags_t flags_to_remove)
 
 void scheduler_pool(void)
 {
+	static uint32_t last_tick;
 	uint32_t tick = get_tick();
+
+	if( tick == last_tick ) return;
+
+	last_tick = tick;
 
 	task_handle_t ptr = list;
 	task_handle_t prev = NULL;

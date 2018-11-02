@@ -49,7 +49,15 @@ Application/User/usb_device.o: \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_bot.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc/usbd_msc_scsi.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_storage_if.h
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_storage_if.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/fatfs.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/integer.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/ffconf.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h
 
 X:/ARM_STM32/zegarek_justyny_V2/Inc/usb_device.h:
 
@@ -150,3 +158,19 @@ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Class/MS
 X:/ARM_STM32/zegarek_justyny_V2/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_storage_if.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Inc/fatfs.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/integer.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Inc/ffconf.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
+
+X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h:

@@ -56,6 +56,7 @@
 #include "../SW4STM32/zegarek_justyny_V2/Application/User/WiFi/wifi.h"
 #include "../SW4STM32/zegarek_justyny_V2/Application/User/Flash_mem/mem_funs.h"
 #include "../SW4STM32/zegarek_justyny_V2/Application/User/Scheduler/scheduler.h"
+#include "../SW4STM32/zegarek_justyny_V2/Application/User/RTC/rtc.h"
 #include "usbd_msc.h"
 /* USER CODE END Includes */
 
@@ -132,7 +133,6 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM15_Init();
-  MX_USB_DEVICE_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
@@ -140,7 +140,10 @@ int main(void)
   mem_register_SPI(&hspi1);
   mem_init();
 
+  f_forcemount(0);
+
   wifi_init(&huart2);
+  rtc_module_init();
 
   /* USER CODE END 2 */
 
@@ -152,7 +155,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 	  scheduler_pool();
-	  FATFS_mount_event();
+//	  FATFS_mount_event();
   }
   /* USER CODE END 3 */
 

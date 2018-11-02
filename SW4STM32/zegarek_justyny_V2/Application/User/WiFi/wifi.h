@@ -18,7 +18,6 @@ typedef union _IP_t
 	uint32_t all;
 } IP_t;
 
-
 typedef struct _NTP_info
 {
 	char ip[20];
@@ -94,5 +93,8 @@ void wifi_connect( void );
 void wifi_init( UART_HandleTypeDef * uart );
 
 void server_init( void );
+
+void wifi_save_config( WiFi_config_t * config );
+void wifi_read_config( WiFi_config_t * config );
 
 #endif /* APPLICATION_USER_WIFI_WIFI_H_ */

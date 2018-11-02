@@ -89,7 +89,7 @@ void wifi_uart_start_rec( void )
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-			if( callback ) callback(rec_buf);
+	if( callback ) callback(rec_buf);
 
 	memset(rec_buf, 0, STD_LEN);
 	wifi_uart_start_rec();

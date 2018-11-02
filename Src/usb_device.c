@@ -56,7 +56,7 @@
 #include "usbd_storage_if.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "fatfs.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -106,7 +106,7 @@ void MX_USB_DEVICE_Init(void)
   USBD_Start(&hUsbDeviceFS);
 
   /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
-  
+//  usb_disconnect();
   /* USER CODE END USB_DEVICE_Init_PostTreatment */
 }
 

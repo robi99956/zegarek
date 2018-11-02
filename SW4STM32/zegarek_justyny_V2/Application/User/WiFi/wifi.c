@@ -13,16 +13,13 @@
 #include "../Scheduler/scheduler.h"
 
 static WiFi_config_t wifi_config;
-static wifi_string wifi_list[20];
 
 task_handle_t keep_connect_task_handle;
 task_handle_t connect_task_handle;
-task_handle_t make_wifi_list_task_handle;
 
-void wifi_connect( void );
+void wifi_connect_task( void );
 void wifi_keep_connected_task( void );
 void wifi_reset( void );
-void wifi_make_wifi_list_task( void );
 void wifi_getip_task( void );
 
 void wifi_set_config( WiFi_config_t * config )
@@ -141,6 +138,8 @@ void wifi_write_config_task( void )
 			wifi_write_config_time_api, wifi_write_config_loctime_api
 	};
 
+	if( wifi_config.connect_info.ssid[0] == 0 ) return;
+
 	wifi_uart_callback_register(wifi_write_config_callback);
 
 	configs[wifi_config.mode](&wifi_config);
@@ -164,7 +163,7 @@ static void configure_keep_connected( void )
 
 static void configure_try_connect( void )
 {
-	connect_task_handle = scheduler_add_task(wifi_connect, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
+	connect_task_handle = scheduler_add_task(wifi_connect_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
 
 	scheduler_remove_task( keep_connect_task_handle );
 	keep_connect_task_handle = NULL;
@@ -202,13 +201,15 @@ uint8_t wifi_connect_callback( char * answer )
 	return retval;
 }
 
-void wifi_connect( void )
+void wifi_connect_task( void )
 {
 	static const char cmd[] = "CONNECT ";
 
-	strcpy(wifi_config.connect_info.ssid, "Fiszer");
-	strcpy(wifi_config.connect_info.passwd, "00000111111");
-	wifi_config.mode = MANUAL;
+	if( wifi_config.connect_info.ssid[0] == 0 )
+	{
+		if( is_trying_to_connect() == 0 ) configure_try_connect();
+		return;
+	}
 
 	wifi_uart_puts( cmd );
 	wifi_uart_puts( wifi_config.connect_info.ssid );
@@ -250,7 +251,7 @@ void wifi_reset_task( void )
 {
 	wifi_uart_init();
 
-	scheduler_add_task(wifi_connect, 0, 0, REQUIRES_UART_ANSWER);
+	scheduler_add_task(wifi_connect_task, 0, 0, REQUIRES_UART_ANSWER);
 }
 
 void wifi_reset( void )
@@ -263,59 +264,9 @@ void wifi_reset( void )
 	scheduler_add_task(wifi_reset_task, 3, DELAY_SECONDS, 0);
 }
 
-uint8_t wifi_make_wifi_list_callback( char * answer )
-{
-	uint8_t retval=0;
-	static uint8_t ssid_idx;
-
-	if( strcmp(answer, "WIFI LIST END") == 0 )
-	{
-		retval = 1;
-		scheduler_unlock(REQUIRES_UART_ANSWER);
-	}
-	else
-		if( strcmp(answer, "WIFI LIST START") == 0 )
-		{
-			ssid_idx = 0;
-
-			for( uint8_t i=0; wifi_list[i].len; i++ )
-			{
-				wifi_list[i].len = 0;
-				free( wifi_list[i].s );
-			}
-
-			retval = 1;
-		}
-		else
-			if( strncmp(answer, "WIFI ", 5) == 0 && ssid_idx < (sizeof(wifi_list)/sizeof(wifi_string)) )
-			{
-				answer += 5;
-				uint8_t len = strlen(answer);
-
-				wifi_list[ssid_idx].len = len;
-				wifi_list[ssid_idx].s = (char*)malloc(len);
-
-				memcpy(wifi_list[ssid_idx].s, answer, len);
-
-				retval = 1;
-
-				ssid_idx++;
-			}
-
-	return retval;
-}
-
-void wifi_make_wifi_list_task( void )
-{
-	static const char cmd[] = "SCAN\r";
-	wifi_uart_puts(cmd);
-
-	wifi_uart_callback_register(wifi_make_wifi_list_callback);
-}
-
 uint8_t wifi_getip_callback( char * answer )
 {
-	if( strcmp(answer, "IP 0.0.0.0") == 0 )
+	if( strcmp(answer, "IP 0.0.0.0") == 0 || strcmp(answer, "IP DISCONNECTED") )
 	{
 		if( is_trying_to_connect() == 0 )
 		{
@@ -338,12 +289,11 @@ void wifi_getip_task( void )
 
 void wifi_init( UART_HandleTypeDef * uart )
 {
+	wifi_read_config(&wifi_config);
 	wifi_uart_handle_register(uart);
 	wifi_uart_start_rec();
 
-	scheduler_add_task(wifi_connect, 0, 0, REQUIRES_UART_ANSWER);
-
-	make_wifi_list_task_handle = scheduler_add_task(wifi_make_wifi_list_task, 20, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
+	scheduler_add_task(wifi_connect_task, 6, DELAY_SECONDS, REQUIRES_UART_ANSWER);
 
 	server_init();
 }
