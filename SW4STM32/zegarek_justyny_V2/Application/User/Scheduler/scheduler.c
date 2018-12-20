@@ -12,7 +12,7 @@
 static task_handle_t list;
 static scheduler_flags_t flags;
 
-task_handle_t scheduler_add_task(task_callback callback, uint32_t delay, delay_units_t delay_unit, scheduler_flags_t flags)
+task_handle_t scheduler_add_task(task_callback callback, uint32_t delay, delay_units_t delay_unit, scheduler_flags_t flags, void * arg)
 {
 	task_handle_t ptr = list;
 
@@ -39,6 +39,7 @@ task_handle_t scheduler_add_task(task_callback callback, uint32_t delay, delay_u
 	ptr->start_tick = get_tick();
 	ptr->delay = delay*delay_unit;
 	ptr->flags = flags;
+	ptr->arg = arg;
 	ptr->next = NULL;
 
 	return ptr;
@@ -60,6 +61,7 @@ void scheduler_remove_task(task_handle_t __task)
 			if (ptr == list) list = (task_handle_t)ptr->next;
 
 			free(ptr);
+			__task = NULL;
 
 			return;
 		}
@@ -92,7 +94,7 @@ void scheduler_pool(void)
 	{
 		if ( tick - ptr->start_tick >= ptr->delay )
 		{
-			scheduler_flags_t ptr_flags = ptr->flags & ~REPEATABLE;
+			scheduler_flags_t ptr_flags = ptr->flags & BLOCKING_FLAGS_MASK;
 
 			if (flags & ptr_flags) goto NEXT_TASK;
 
@@ -100,7 +102,9 @@ void scheduler_pool(void)
 
 			flags |= ptr_flags;
 
-			if ( (ptr->flags & REPEATABLE) == 0 )
+			if (callback) callback(ptr);
+
+			if ( (ptr->flags & REPEATABLE) == 0 || (ptr->flags & DELETE_ASAP) )
 			{
 				if (prev) prev->next = ptr->next;
 
@@ -112,8 +116,6 @@ void scheduler_pool(void)
 			{
 				ptr->start_tick = tick;
 			}
-
-			if (callback) callback();
 			return;
 		}
 

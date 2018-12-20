@@ -1,7 +1,7 @@
 "Application/SW4STM32/startup_stm32f072xb.o"
 "Application/User/Flash_mem/mem_funs.o"
+"Application/User/Led/led.o"
 "Application/User/RTC/rtc.o"
-"Application/User/RTC/time.o"
 "Application/User/Scheduler/scheduler.o"
 "Application/User/WAV_player/wav_player.o"
 "Application/User/WiFi/config.o"

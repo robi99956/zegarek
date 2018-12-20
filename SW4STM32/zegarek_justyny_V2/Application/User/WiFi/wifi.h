@@ -56,7 +56,7 @@ typedef struct _WiFi_config_t
 
 	CONNECT_info connect_info;
 
-	char time_format[24];
+	char time_format[32];
 
 	char country_code[8];
 
@@ -96,5 +96,9 @@ void server_init( void );
 
 void wifi_save_config( WiFi_config_t * config );
 void wifi_read_config( WiFi_config_t * config );
+
+void wifi_get_ip( void(*callback)(char*) );
+
+void configure_try_connect( void );
 
 #endif /* APPLICATION_USER_WIFI_WIFI_H_ */

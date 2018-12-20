@@ -38,7 +38,8 @@ Application/User/RTC/rtc.o: ../Application/User/RTC/rtc.c \
  ../Application/User/RTC/rtc.h \
  ../Application/User/RTC/../Scheduler/scheduler.h \
  ../Application/User/RTC/../Scheduler/system.h \
- ../Application/User/RTC/../WiFi/wifi.h
+ ../Application/User/RTC/../WiFi/wifi.h \
+ ../Application/User/RTC/../Led/led.h
 
 X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 
@@ -119,3 +120,5 @@ X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_u
 ../Application/User/RTC/../Scheduler/system.h:
 
 ../Application/User/RTC/../WiFi/wifi.h:
+
+../Application/User/RTC/../Led/led.h:

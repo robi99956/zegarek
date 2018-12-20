@@ -4,17 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Application/User/RTC/rtc.c 
+../Application/User/Led/led.c 
 
 OBJS += \
-./Application/User/RTC/rtc.o 
+./Application/User/Led/led.o 
 
 C_DEPS += \
-./Application/User/RTC/rtc.d 
+./Application/User/Led/led.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Application/User/RTC/%.o: ../Application/User/RTC/%.c
+Application/User/Led/%.o: ../Application/User/Led/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo %cd%

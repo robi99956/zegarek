@@ -26,4 +26,7 @@ typedef	union _byte_field_32b
 #define RIFF_U32 0x46464952
 #define WAVE_U32 0x45564157
 
+void wav_player_start( char * filename );
+void wav_player_register_hardware( DAC_HandleTypeDef * handle, uint32_t _channel, TIM_HandleTypeDef * _timer );
+
 #endif /* APPLICATION_USER_WAV_PLAYER_WAV_PLAYER_H_ */

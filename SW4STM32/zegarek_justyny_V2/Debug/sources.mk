@@ -17,6 +17,7 @@ C_DEPS :=
 SUBDIRS := \
 Application/SW4STM32 \
 Application/User/Flash_mem \
+Application/User/Led \
 Application/User/RTC \
 Application/User/Scheduler \
 Application/User/WAV_player \

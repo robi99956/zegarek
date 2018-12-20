@@ -15,8 +15,8 @@
 void MX_USB_DEVICE_Init(void);
 static void send_file( char * filename );
 char * prepare_filename( char * filename );
-void send_file_task( void );
-void server_post_task( void );
+void send_file_task( task_handle_t task );
+void server_post_task( task_handle_t task );
 
 task_handle_t post_task_handle;
 
@@ -31,15 +31,17 @@ uint8_t send_file_callback( char * message )
 	else
 	if( (strcmp(message, "FILE OK") == 0) || (strcmp(message, "FILE ERROR") == 0) )
 	{
-		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
+		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 		scheduler_unlock(REQUIRES_UART_ANSWER);
 	}
 
 	return 1;
 }
 
-void send_file_task( void )
+void send_file_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	FILINFO info;
 	FRESULT res;
 
@@ -56,7 +58,7 @@ void send_file_task( void )
 
 	if( info.fattrib & AM_DIR )
 	{
-		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
+		scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 		scheduler_unlock(REQUIRES_UART_ANSWER);
 		return;
 	}
@@ -78,8 +80,8 @@ void server_init( void )
 	f_chdir("/strona");
 	if( res != FR_OK ) return;
 
-	scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER);
-	scheduler_add_task(server_post_task, 10, DELAY_SECONDS, REPEATABLE | REQUIRES_UART_ANSWER);
+	scheduler_add_task(send_file_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
+	scheduler_add_task(server_post_task, 10, DELAY_SECONDS, REPEATABLE | REQUIRES_UART_ANSWER, NULL);
 }
 
 void change_config( char * message )
@@ -152,8 +154,10 @@ uint8_t server_post_callback( char * message )
 	return retval;
 }
 
-void server_post_task( void )
+void server_post_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	static const char cmd[] = "POST\r";
 	wifi_uart_puts(cmd);
 

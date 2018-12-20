@@ -17,10 +17,10 @@ static WiFi_config_t wifi_config;
 task_handle_t keep_connect_task_handle;
 task_handle_t connect_task_handle;
 
-void wifi_connect_task( void );
-void wifi_keep_connected_task( void );
+void wifi_connect_task( task_handle_t task );
+void wifi_keep_connected_task( task_handle_t task );
 void wifi_reset( void );
-void wifi_getip_task( void );
+void wifi_getip_task( task_handle_t task );
 
 void wifi_set_config( WiFi_config_t * config )
 {
@@ -131,9 +131,12 @@ uint8_t wifi_write_config_callback( char * answer )
 	return retval;
 }
 
-void wifi_write_config_task( void )
+void wifi_write_config_task( task_handle_t task )
 {
-	static const config_fun configs[4] = {
+	UNUSED(task);
+
+	static const config_fun configs[4] =
+	{
 			wifi_write_config_manual, wifi_write_config_ntp,
 			wifi_write_config_time_api, wifi_write_config_loctime_api
 	};
@@ -150,20 +153,22 @@ static inline uint8_t is_trying_to_connect( void )
 	return (connect_task_handle!=NULL);
 }
 
-static void configure_keep_connected( void )
+void configure_keep_connected( void )
 {
-	keep_connect_task_handle = scheduler_add_task(wifi_keep_connected_task, 1, DELAY_MINUTES, REQUIRES_UART_ANSWER | REPEATABLE);
+	scheduler_remove_task( keep_connect_task_handle );
+	keep_connect_task_handle = scheduler_add_task(wifi_keep_connected_task, 1, DELAY_MINUTES, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
 
-	scheduler_add_task(wifi_getip_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER);
-	scheduler_add_task(wifi_write_config_task, 0, 0, REQUIRES_UART_ANSWER);
+	scheduler_add_task(wifi_getip_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+	scheduler_add_task(wifi_write_config_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 
 	scheduler_remove_task( connect_task_handle );
 	connect_task_handle = NULL;
 }
 
-static void configure_try_connect( void )
+void configure_try_connect( void )
 {
-	connect_task_handle = scheduler_add_task(wifi_connect_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE);
+	scheduler_remove_task( connect_task_handle );
+	connect_task_handle = scheduler_add_task(wifi_connect_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
 
 	scheduler_remove_task( keep_connect_task_handle );
 	keep_connect_task_handle = NULL;
@@ -201,8 +206,10 @@ uint8_t wifi_connect_callback( char * answer )
 	return retval;
 }
 
-void wifi_connect_task( void )
+void wifi_connect_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	static const char cmd[] = "CONNECT ";
 
 	if( wifi_config.connect_info.ssid[0] == 0 )
@@ -239,19 +246,23 @@ uint8_t wifi_keep_connected_callback( char * answer )
 	return retval;
 }
 
-void wifi_keep_connected_task( void )
+void wifi_keep_connected_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	static const char cmd[] = "STATUS\r";
 	wifi_uart_puts(cmd);
 
 	wifi_uart_callback_register(wifi_keep_connected_callback);
 }
 
-void wifi_reset_task( void )
+void wifi_reset_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	wifi_uart_init();
 
-	scheduler_add_task(wifi_connect_task, 0, 0, REQUIRES_UART_ANSWER);
+	scheduler_add_task(wifi_connect_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 }
 
 void wifi_reset( void )
@@ -261,30 +272,43 @@ void wifi_reset( void )
 
 	wifi_uart_deinit();
 
-	scheduler_add_task(wifi_reset_task, 3, DELAY_SECONDS, 0);
+	scheduler_add_task(wifi_reset_task, 3, DELAY_SECONDS, 0, NULL);
 }
+
+static void(*ip_callback)(char*);
 
 uint8_t wifi_getip_callback( char * answer )
 {
-	if( strcmp(answer, "IP 0.0.0.0") == 0 || strcmp(answer, "IP DISCONNECTED") )
+	if( (strcmp(answer, "IP 0.0.0.0") == 0) || (strcmp(answer, "IP DISCONNECTED") == 0) )
 	{
-		if( is_trying_to_connect() == 0 )
-		{
-			configure_try_connect();
-		}
+		configure_try_connect();
 	}
+	else
+		if( strncmp(answer, "IP ", 3) == 0 )
+		{
+			if( ip_callback ) ip_callback(answer+3);
+			ip_callback = NULL;
+		}
 
 	scheduler_unlock(REQUIRES_UART_ANSWER);
 
 	return 1;
 }
 
-void wifi_getip_task( void )
+void wifi_getip_task( task_handle_t task )
 {
+	UNUSED(task);
+
 	static const char cmd[] = "GETIP\r";
 	wifi_uart_puts(cmd);
 
 	wifi_uart_callback_register(wifi_getip_callback);
+}
+
+void wifi_get_ip( void(*callback)(char*)  )
+{
+	ip_callback = callback;
+	scheduler_add_task(wifi_getip_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 }
 
 void wifi_init( UART_HandleTypeDef * uart )
@@ -293,7 +317,7 @@ void wifi_init( UART_HandleTypeDef * uart )
 	wifi_uart_handle_register(uart);
 	wifi_uart_start_rec();
 
-	scheduler_add_task(wifi_connect_task, 6, DELAY_SECONDS, REQUIRES_UART_ANSWER);
+	scheduler_add_task(wifi_connect_task, 6, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
 
 	server_init();
 }

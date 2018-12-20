@@ -16,6 +16,7 @@ RM := rm -rf
 -include Application/User/WAV_player/subdir.mk
 -include Application/User/Scheduler/subdir.mk
 -include Application/User/RTC/subdir.mk
+-include Application/User/Led/subdir.mk
 -include Application/User/Flash_mem/subdir.mk
 -include Application/User/subdir.mk
 -include Application/SW4STM32/subdir.mk
