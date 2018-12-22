@@ -88,6 +88,8 @@ void wifi_save_config( WiFi_config_t * config )
 	f_close(&USERFile);
 
 	f_unmount();
+
+	scheduler_add_task(wifi_write_config_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 }
 
 void wifi_read_parameter( char * name, char * value, WiFi_config_t * config )

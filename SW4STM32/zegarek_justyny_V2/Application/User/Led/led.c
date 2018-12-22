@@ -51,6 +51,8 @@ void led_init( TIM_HandleTypeDef * htim, SPI_HandleTypeDef * hspi, GPIO_TypeDef 
 	LATCH_gpio = L_gpio;
 	LATCH_pin = L_pin;
 
+	timer->Instance->ARR = 210;
+
 	HAL_TIM_Base_Start_IT(timer);
 }
 

@@ -14,33 +14,16 @@ static scheduler_flags_t flags;
 
 task_handle_t scheduler_add_task(task_callback callback, uint32_t delay, delay_units_t delay_unit, scheduler_flags_t flags, void * arg)
 {
-	task_handle_t ptr = list;
-
-	if (ptr != NULL)
-	{
-		while (ptr->next != NULL)
-		{
-			ptr = (task_handle_t)ptr->next;
-		}
-
-		ptr->next = (task_handle_t)malloc(sizeof(task));
-		if (ptr->next == NULL) return NULL;
-
-		ptr = (task_handle_t)ptr->next;
-	}
-	else
-	{
-		ptr = (task_handle_t)malloc(sizeof(task));
-		if (ptr == NULL) return NULL;
-		list = ptr;
-	}
+	task_handle_t ptr = malloc(sizeof(task));
+	if (ptr == NULL) return NULL;
 
 	ptr->callback = callback;
 	ptr->start_tick = get_tick();
 	ptr->delay = delay*delay_unit;
 	ptr->flags = flags;
 	ptr->arg = arg;
-	ptr->next = NULL;
+	ptr->next = list;
+	list = ptr;
 
 	return ptr;
 }

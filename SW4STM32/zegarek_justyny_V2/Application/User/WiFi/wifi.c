@@ -13,9 +13,7 @@
 #include "../Scheduler/scheduler.h"
 
 static WiFi_config_t wifi_config;
-
-task_handle_t keep_connect_task_handle;
-task_handle_t connect_task_handle;
+static wifi_status_t wifi_status = DISCONNECTED;
 
 void wifi_connect_task( task_handle_t task );
 void wifi_keep_connected_task( task_handle_t task );
@@ -148,32 +146,6 @@ void wifi_write_config_task( task_handle_t task )
 	configs[wifi_config.mode](&wifi_config);
 }
 
-static inline uint8_t is_trying_to_connect( void )
-{
-	return (connect_task_handle!=NULL);
-}
-
-void configure_keep_connected( void )
-{
-	scheduler_remove_task( keep_connect_task_handle );
-	keep_connect_task_handle = scheduler_add_task(wifi_keep_connected_task, 1, DELAY_MINUTES, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
-
-	scheduler_add_task(wifi_getip_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
-	scheduler_add_task(wifi_write_config_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
-
-	scheduler_remove_task( connect_task_handle );
-	connect_task_handle = NULL;
-}
-
-void configure_try_connect( void )
-{
-	scheduler_remove_task( connect_task_handle );
-	connect_task_handle = scheduler_add_task(wifi_connect_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
-
-	scheduler_remove_task( keep_connect_task_handle );
-	keep_connect_task_handle = NULL;
-}
-
 uint8_t wifi_connect_callback( char * answer )
 {
 	static uint8_t fails;
@@ -181,8 +153,8 @@ uint8_t wifi_connect_callback( char * answer )
 
 	if( strcmp(answer, "CONNECT OK") == 0 )
 	{
-		configure_keep_connected();
-
+		scheduler_add_task(wifi_getip_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+		wifi_status = CONNECTED;
 		fails = 0;
 
 		retval = 1;
@@ -190,7 +162,8 @@ uint8_t wifi_connect_callback( char * answer )
 	else
 		if( strcmp( answer, "CONNECT ERROR") == 0 )
 		{
-			if( is_trying_to_connect() == 0 ) configure_try_connect();
+			scheduler_add_task(wifi_connect_task, 60, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+			wifi_status = DISCONNECTED;
 
 			if( fails++ == 20 )
 			{
@@ -214,7 +187,7 @@ void wifi_connect_task( task_handle_t task )
 
 	if( wifi_config.connect_info.ssid[0] == 0 )
 	{
-		if( is_trying_to_connect() == 0 ) configure_try_connect();
+		scheduler_add_task(wifi_connect_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
 		return;
 	}
 
@@ -232,12 +205,18 @@ uint8_t wifi_keep_connected_callback( char * answer )
 	uint8_t retval=0;
 	if( strcmp(answer, "STATUS DISCONNECTED") == 0 )
 	{
-		configure_try_connect();
+		if( wifi_status == CONNECTED )
+		{
+			scheduler_add_task(wifi_connect_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+			wifi_status = DISCONNECTED;
+		}
+
 		retval = 1;
 	}
 	else
 		if( strcmp(answer, "STATUS CONNECTED") == 0 )
 		{
+//			wifi_status = CONNECTED;
 			retval = 1;
 		}
 
@@ -281,7 +260,11 @@ uint8_t wifi_getip_callback( char * answer )
 {
 	if( (strcmp(answer, "IP 0.0.0.0") == 0) || (strcmp(answer, "IP DISCONNECTED") == 0) )
 	{
-		configure_try_connect();
+		if( wifi_status == CONNECTED )
+		{
+			scheduler_add_task(wifi_connect_task, 1, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+			wifi_status = DISCONNECTED;
+		}
 	}
 	else
 		if( strncmp(answer, "IP ", 3) == 0 )
@@ -317,7 +300,9 @@ void wifi_init( UART_HandleTypeDef * uart )
 	wifi_uart_handle_register(uart);
 	wifi_uart_start_rec();
 
+	scheduler_add_task(wifi_write_config_task, 0, 0, REQUIRES_UART_ANSWER, NULL);
 	scheduler_add_task(wifi_connect_task, 6, DELAY_SECONDS, REQUIRES_UART_ANSWER, NULL);
+	scheduler_add_task(wifi_keep_connected_task, 1, DELAY_MINUTES, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
 
 	server_init();
 }

@@ -59,6 +59,8 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define SIGNAL_Pin GPIO_PIN_0
+#define SIGNAL_GPIO_Port GPIOA
 #define DAC_Pin GPIO_PIN_5
 #define DAC_GPIO_Port GPIOA
 #define LED_SCK_Pin GPIO_PIN_13

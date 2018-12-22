@@ -49,9 +49,10 @@ Application/User/main.o: X:/ARM_STM32/zegarek_justyny_V2/Src/main.c \
  X:/ARM_STM32/zegarek_justyny_V2/Inc/usbd_conf.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\led\led.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wifi\wifi.h \
- x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h \
+ x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h \
+ x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\rtc\rtc.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h \
  x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wav_player\wav_player.h \
@@ -165,11 +166,13 @@ x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\led
 
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\wifi\wifi.h:
 
-x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h:
-
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h:
 
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\system.h:
+
+x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\flash_mem\mem_funs.h:
+
+x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\scheduler\scheduler.h:
 
 x:\arm_stm32\zegarek_justyny_v2\sw4stm32\zegarek_justyny_v2\application\user\rtc\rtc.h:
 

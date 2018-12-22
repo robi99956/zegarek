@@ -14,4 +14,6 @@
 void rtc_module_init( void );
 void show_time_task( task_handle_t task );
 
+void rtc_set_time_manual( char * new_time );
+
 #endif /* APPLICATION_USER_RTC_RTC_H_ */

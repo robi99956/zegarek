@@ -36,6 +36,8 @@ Application/User/WiFi/config.o: ../Application/User/WiFi/config.c \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
+ ../Application/User/WiFi/../Scheduler/scheduler.h \
+ ../Application/User/WiFi/../Scheduler/system.h \
  X:/ARM_STM32/zegarek_justyny_V2/Inc/fatfs.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/integer.h \
@@ -43,9 +45,7 @@ Application/User/WiFi/config.o: ../Application/User/WiFi/config.c \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h \
  X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h \
- X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h \
- ../Application/User/WiFi/../Scheduler/scheduler.h \
- ../Application/User/WiFi/../Scheduler/system.h
+ X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h
 
 ../Application/User/WiFi/wifi.h:
 
@@ -121,6 +121,10 @@ X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_u
 
 X:/ARM_STM32/zegarek_justyny_V2/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 
+../Application/User/WiFi/../Scheduler/scheduler.h:
+
+../Application/User/WiFi/../Scheduler/system.h:
+
 X:/ARM_STM32/zegarek_justyny_V2/Inc/fatfs.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
@@ -136,7 +140,3 @@ X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/diskio.h:
 X:/ARM_STM32/zegarek_justyny_V2/Middlewares/Third_Party/FatFs/src/ff.h:
 
 X:/ARM_STM32/zegarek_justyny_V2/Inc/user_diskio.h:
-
-../Application/User/WiFi/../Scheduler/scheduler.h:
-
-../Application/User/WiFi/../Scheduler/system.h:

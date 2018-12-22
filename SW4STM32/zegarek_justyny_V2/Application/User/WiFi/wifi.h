@@ -9,8 +9,10 @@
 #define APPLICATION_USER_WIFI_WIFI_H_
 
 #include "stm32f0xx_hal.h"
+#include "../Scheduler/scheduler.h"
 
 typedef enum _get_time_mode{ MANUAL, NTP, API_TIME, API_LOCTIME } get_time_mode;
+typedef enum _status{ DISCONNECTED, CONNECTED } wifi_status_t;
 
 typedef union _IP_t
 {
@@ -99,6 +101,6 @@ void wifi_read_config( WiFi_config_t * config );
 
 void wifi_get_ip( void(*callback)(char*) );
 
-void configure_try_connect( void );
+void wifi_write_config_task( task_handle_t task );
 
 #endif /* APPLICATION_USER_WIFI_WIFI_H_ */

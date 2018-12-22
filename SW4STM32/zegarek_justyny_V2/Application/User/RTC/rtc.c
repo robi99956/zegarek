@@ -8,6 +8,7 @@
 #include "stm32f0xx_hal.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "rtc.h"
 #include "../Scheduler/scheduler.h"
@@ -15,6 +16,7 @@
 #include "../Led/led.h"
 
 extern RTC_HandleTypeDef hrtc;
+const static uint16_t ld[12] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 
 #define ERR_MAX 5
 
@@ -60,6 +62,9 @@ uint8_t get_time_callback( char * answer )
 {
 	static uint8_t err_no;
 
+	WiFi_config_t * config = wifi_get_config();
+	if( config->mode == MANUAL ) goto END;
+
 	if( strncmp(answer, "TIME ", 5) == 0 )
 	{
 		if( answer[5] >= '0' && answer[5] <= '9')
@@ -83,10 +88,11 @@ uint8_t get_time_callback( char * answer )
 
 				if( err_no == ERR_MAX )
 				{
-					configure_try_connect();
+
 				}
 			}
 
+		END:
 		scheduler_unlock(REQUIRES_UART_ANSWER);
 		return 1;
 	}
@@ -99,6 +105,13 @@ void get_time_task( task_handle_t task )
 	UNUSED(task);
 
 	static const char cmd[] = "TIME\r";
+
+	WiFi_config_t * config = wifi_get_config();
+	if( config->mode == MANUAL )
+	{
+		scheduler_unlock(REQUIRES_UART_ANSWER);
+		return;
+	}
 
 	wifi_uart_callback_register(get_time_callback);
 	wifi_uart_puts(cmd);
@@ -117,10 +130,23 @@ void show_time_task( task_handle_t task )
 	led_show_time(&time);
 }
 
+void rtc_set_time_manual( char * new_time )
+{
+	WiFi_config_t * config = wifi_get_config();
+
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+
+	txt_to_czas(new_time, config->time_format, &time, &date);
+
+	HAL_RTC_SetTime(&hrtc, &time, RTC_FORMAT_BIN);
+	HAL_RTC_SetDate(&hrtc, &date, RTC_FORMAT_BIN);
+}
+
 void rtc_module_init( void )
 {
-	scheduler_add_task(get_time_task, 15, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
-	scheduler_add_task(show_time_task, 500, DELAY_MILLISECONDS, REPEATABLE, NULL);
+	scheduler_add_task(get_time_task, 30, DELAY_SECONDS, REQUIRES_UART_ANSWER | REPEATABLE, NULL);
+	scheduler_add_task(show_time_task, 1, DELAY_SECONDS, REPEATABLE, NULL);
 }
 
 

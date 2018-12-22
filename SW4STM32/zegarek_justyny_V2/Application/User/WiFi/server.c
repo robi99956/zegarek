@@ -11,6 +11,7 @@
 #include "wifi.h"
 #include "fatfs.h"
 #include "../Scheduler/scheduler.h"
+#include "../RTC/rtc.h"
 
 void MX_USB_DEVICE_Init(void);
 static void send_file( char * filename );
@@ -21,6 +22,8 @@ void server_post_task( task_handle_t task );
 task_handle_t post_task_handle;
 
 DIR dir;
+
+static char * new_time;
 
 uint8_t send_file_callback( char * message )
 {
@@ -102,7 +105,9 @@ void change_config( char * message )
 	else if( strcmp(name, "gmtoffset") == 0 )	config->gmt_offset = atoi(value);
 	else if( strcmp(name, "dataczas") == 0 )
 	{
-
+		new_time = (char*)malloc( strlen(value)+1 );
+		if( new_time == NULL ) return;
+		strcpy(new_time, value);
 	}
 	else if( strcmp(name, "_ssid") == 0 )
 	{
@@ -119,6 +124,16 @@ void change_config( char * message )
 		else if( strcmp(value, "NTP") == 0 ) config->mode = NTP;
 		else if( strcmp(value, "MANUAL") == 0 ) config->mode = MANUAL;
 	}
+	else if( strcmp(name, "lato_zima") == 0 )
+	{
+		if( strcmp(value, "on") == 0 )
+		{
+			config->use_summerwinter_time = 1;
+			return;
+		}
+	}
+
+	config->use_summerwinter_time = 0;
 }
 
 uint8_t server_post_callback( char * message )
@@ -134,6 +149,15 @@ uint8_t server_post_callback( char * message )
 	{
 		WiFi_config_t * config = wifi_get_config();
 		wifi_save_config(config);
+
+		f_unmount();
+
+		if( new_time != NULL )
+		{
+			rtc_set_time_manual(new_time);
+			free(new_time);
+			new_time = NULL;
+		}
 
 		retval = 1;
 	}
